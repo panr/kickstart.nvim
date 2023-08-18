@@ -579,7 +579,8 @@ require 'commands'
 local getCommands = function()
   print '--- My custom commands ---\n\n'
   local commands = {}
-  for line in io.lines 'lua/commands.lua' do
+  local file_path = os.getenv("HOME") .. '/.config/nvim/lua/commands.lua'
+  for line in io.lines(file_path) do
     -- "-" sign in Lua means "?" in RegExp for non-greedy matching.
     -- find a first match in string
     local s, e = string.find(line, "'.-'")
@@ -598,7 +599,8 @@ end
 
 vim.api.nvim_create_user_command('Commands', getCommands, {})
 
-vim.cmd 'source ~/.config/nvim/lua/custom/vimscripts/detect-go-html-tmpl.vim'
+-- Custom scripts
+vim.cmd.source(os.getenv("HOME") .. '/.config/nvim/lua/custom/vimscripts/detect-go-html-tmpl.vim')
 
 -- The line beneath this is called `modeline`. See `:hhelp modeline`elp modeline`
 -- vim: ts=2 sts=2 sw=2 et
