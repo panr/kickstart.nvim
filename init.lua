@@ -84,7 +84,7 @@ require('lazy').setup({
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', opts = {} },
+      { 'j-hui/fidget.nvim', tag = 'legacy', opts = {} },
 
       -- Additional lua configuration, makes nvim stuff amazing!
       'folke/neodev.nvim',
@@ -456,11 +456,36 @@ local servers = {
   --   filetypes = { "typescript", "typescriptreact", "typescript.tsx" },
   --   cmd = { "typescript-language-server", "--stdio" },
   -- },
-
+  --
+  awk_ls = {},
+  bashls = {},
+  clangd = {},
+  cssls = {},
+  stylelint_lsp = {},
+  cmake = {},
+  dockerls = {},
+  dotls = {},
+  eslint = {},
+  gopls = {},
+  html = {},
+  jsonls = {},
+  tsserver = {
+    filetypes = { 'typescript', 'typescriptreact', 'typescript.tsx' },
+    cmd = { 'typescript-language-server', '--stdio' },
+  },
+  marksman = {},
+  pylsp = {},
+  ruby_ls = {},
+  svelte = {},
+  taplo = {},
+  yamlls = {},
+  lemminx = {},
   lua_ls = {
-    Lua = {
-      workspace = { checkThirdParty = false },
-      telemetry = { enable = false },
+    settings = {
+      Lua = {
+        workspace = { checkThirdParty = false },
+        telemetry = { enable = false },
+      },
     },
   },
 }
@@ -481,11 +506,27 @@ mason_lspconfig.setup {
 
 mason_lspconfig.setup_handlers {
   function(server_name)
-    require('lspconfig')[server_name].setup {
+    --   require('lspconfig')[server_name].setup {
+    --     capabilities = capabilities,
+    --     on_attach = on_attach,
+    --     settings = servers[server_name],
+    --   }
+
+    local server_setup = {
       capabilities = capabilities,
       on_attach = on_attach,
-      settings = servers[server_name],
+      settings = {},
     }
+
+    if servers[server_name] == nil then
+      servers[server_name] = {}
+    end
+
+    for k, v in pairs(servers[server_name]) do
+      server_setup[k] = v
+    end
+
+    require('lspconfig')[server_name].setup(server_setup)
   end,
 }
 
@@ -535,8 +576,29 @@ cmp.setup {
 }
 
 require 'commands'
+local getCommands = function()
+  print '--- My custom commands ---\n\n'
+  local commands = {}
+  for line in io.lines 'lua/commands.lua' do
+    -- "-" sign in Lua means "?" in RegExp for non-greedy matching.
+    -- find a first match in string
+    local s, e = string.find(line, "'.-'")
+    if s and e then
+      local command = string.sub(line, s, e)
+      if command then
+        local c = command:gsub("'", '')
+        print(c)
+        table.insert(commands, c)
+      end
+    end
+  end
 
--- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et
+  return commands
+end
+
+vim.api.nvim_create_user_command('Commands', getCommands, {})
 
 vim.cmd 'source ~/.config/nvim/lua/custom/vimscripts/detect-go-html-tmpl.vim'
+
+-- The line beneath this is called `modeline`. See `:hhelp modeline`elp modeline`
+-- vim: ts=2 sts=2 sw=2 et

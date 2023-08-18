@@ -5,7 +5,7 @@ return {
     if (not status) then return end
 
     local formatting = null_ls.builtins.formatting
-    local code_actions = null_ls.builtins.code_actions
+    -- local code_actions = null_ls.builtins.code_actions
     -- local diagnostics = null_ls.builtins.diagnostics
 
     -- to setup format on save
@@ -15,7 +15,7 @@ return {
       sources = {
         formatting.prettier,
         formatting.stylua,
-        code_actions.eslint,
+        -- code_actions.eslint,
         -- diagnostics.eslint.with({
         --   condition = function(utils)
         --     return utils.root_has_file({
@@ -36,6 +36,9 @@ return {
             callback = function()
               vim.lsp.buf.format({
                 filter = function(client)
+                  if vim.bo.filetype == 'html' then
+                    return false
+                  end
                   --  only use null-ls for formatting instead of lsp serve r
                   return client.name == "null-ls"
                 end,
