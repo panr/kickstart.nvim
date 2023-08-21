@@ -17,10 +17,11 @@ return {
     })
 
     -- Remap switching between panes
-    vim.keymap.set('n', '<C-h>', '<C-w>h', { noremap = true, silent = true })
-    vim.keymap.set('n', '<C-j>', '<C-w>j', { noremap = true, silent = true })
-    vim.keymap.set('n', '<C-k>', '<C-w>k', { noremap = true, silent = true })
-    vim.keymap.set('n', '<C-l>', '<C-w>l', { noremap = true, silent = true })
+    -- Commented out due to issues with vim-navigator (but it works)
+    -- vim.keymap.set('n', '<C-h>', '<C-w>h', { noremap = true, silent = true })
+    -- vim.keymap.set('n', '<C-j>', '<C-w>j', { noremap = true, silent = true })
+    -- vim.keymap.set('n', '<C-k>', '<C-w>k', { noremap = true, silent = true })
+    -- vim.keymap.set('n', '<C-l>', '<C-w>l', { noremap = true, silent = true })
 
     require('nvim-tree').setup {
       sort_by = 'case_sensitive',

@@ -416,6 +416,7 @@ local on_attach = function(client, bufnr)
   nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
   nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
   nmap('gI', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
+  nmap('gK', vim.lsp.buf.hover, '[G]oto Documentation')
   nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
   nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
   nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
@@ -579,7 +580,7 @@ require 'commands'
 local getCommands = function()
   print '--- My custom commands ---\n\n'
   local commands = {}
-  local file_path = os.getenv("HOME") .. '/.config/nvim/lua/commands.lua'
+  local file_path = os.getenv 'HOME' .. '/.config/nvim/lua/commands.lua'
   for line in io.lines(file_path) do
     -- "-" sign in Lua means "?" in RegExp for non-greedy matching.
     -- find a first match in string
@@ -600,11 +601,11 @@ end
 vim.api.nvim_create_user_command('Commands', getCommands, {})
 
 -- Custom scripts
-vim.cmd.source(os.getenv("HOME") .. '/.config/nvim/lua/custom/vimscripts/detect-go-html-tmpl.vim')
+vim.cmd.source(os.getenv 'HOME' .. '/.config/nvim/lua/custom/vimscripts/detect-go-html-tmpl.vim')
 
 -- Neovide settings
 if vim.g.neovide then
- require 'neovide'
+  require 'neovide'
 end
 
 -- The line beneath this is called `modeline`. See `:hhelp modeline`elp modeline`
