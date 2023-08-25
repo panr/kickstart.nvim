@@ -471,7 +471,7 @@ local servers = {
   html = {},
   jsonls = {},
   tsserver = {
-    filetypes = { 'typescript', 'typescriptreact', 'typescript.tsx' },
+    -- filetypes = { 'typescript', 'typescriptreact', 'typescript.tsx' },
     cmd = { 'typescript-language-server', '--stdio' },
   },
   marksman = {},
