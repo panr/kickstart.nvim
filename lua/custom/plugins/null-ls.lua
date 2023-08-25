@@ -8,6 +8,22 @@ return {
     -- local code_actions = null_ls.builtins.code_actions
     -- local diagnostics = null_ls.builtins.diagnostics
 
+    -- Diagnostics
+    vim.diagnostic.config({
+      virtual_text = false,
+      update_in_insert = false,
+      float = {
+        border = "single",
+        format = function(diagnostic)
+          return string.format("%s: %s [%s]",
+            diagnostic.source,
+            diagnostic.message,
+            diagnostic.code or diagnostic.user_data.lsp.coded
+          )
+        end
+      }
+    })
+
     -- to setup format on save
     local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 

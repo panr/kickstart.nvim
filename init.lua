@@ -441,6 +441,11 @@ local on_attach = function(client, bufnr)
   if client.name == 'tsserver' then
     client.server_capabilities.documentFormattingProvider = false -- 0.8 and later
   end
+
+  -- Skip stylelint_lsp when there is no <style> tags in javascript files
+  if client.name == "stylelint_lsp" and vim.bo.filetype == 'javascript' and (vim.fn.search("<style>.*</style>") == 0) then
+    client.stop()
+  end
 end
 
 -- Enable the following language servers
