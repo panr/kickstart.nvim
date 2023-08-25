@@ -613,5 +613,7 @@ if vim.g.neovide then
   require 'neovide'
 end
 
+require 'mappings'
+
 -- The line beneath this is called `modeline`. See `:hhelp modeline`elp modeline`
 -- vim: ts=2 sts=2 sw=2 et
