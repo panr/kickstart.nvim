@@ -10,8 +10,10 @@ return {
 
     vim.opt.termguicolors = true
 
-    vim.keymap.set('n', '[b', ':BufferLineCyclePrev<CR>', { desc = 'Go to previous tab / buffer' })
-    vim.keymap.set('n', ']b', ':BufferLineCycleNext<CR>', { desc = 'Go to next tab / buffer' })
+    -- vim.keymap.set('n', '[b', ':BufferLineCyclePrev<CR>', { desc = 'Go to previous tab / buffer' })
+    -- vim.keymap.set('n', '[b', ':BufferLineCyclePrev<CR>', { desc = 'Go to previous tab / buffer' })
+    vim.keymap.set('n', '<Tab>', ':BufferLineCycleNext<CR>', { desc = 'Go to next tab / buffer' })
+    vim.keymap.set('n', '<S-Tab>', ':BufferLineCyclePrev<CR>', { desc = 'Go to previous tab / buffer' })
 
     bufferline.setup {
       options = {
