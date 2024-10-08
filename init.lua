@@ -43,6 +43,11 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.opt.spell = true
 
+vim.opt.tabstop = 2
+vim.opt.softtabstop = 2
+vim.opt.shiftwidth = 2
+-- vim.opt.expandtab = true
+
 -- Install package manager
 --    https://github.com/folke/lazy.nvim
 --    `:help lazy.nvim.txt` for more info
@@ -443,8 +448,13 @@ local on_attach = function(client, bufnr)
     client.server_capabilities.documentFormattingProvider = false -- 0.8 and later
   end
 
+  if client.name == 'gopls' then
+    vim.opt.tabstop = 4
+    vim.opt_local.tabstop = 4
+  end
+
   -- Skip stylelint_lsp when there is no <style> tags in javascript files
-  if client.name == "stylelint_lsp" and vim.bo.filetype == 'javascript' and (vim.fn.search("<style>.*</style>") == 0) then
+  if client.name == 'stylelint_lsp' and vim.bo.filetype == 'javascript' and (vim.fn.search '<style>.*</style>' == 0) then
     client.stop()
   end
 end
@@ -557,7 +567,7 @@ cmp.setup {
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
     },
-    ['<Tab>'] = cmp.mapping(function(fallback)
+    ['j'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
       elseif luasnip.expand_or_jumpable() then
@@ -566,7 +576,7 @@ cmp.setup {
         fallback()
       end
     end, { 'i', 's' }),
-    ['<S-Tab>'] = cmp.mapping(function(fallback)
+    ['k'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_prev_item()
       elseif luasnip.jumpable(-1) then
