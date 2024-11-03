@@ -46,7 +46,7 @@ vim.opt.spell = true
 vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
 vim.opt.shiftwidth = 2
--- vim.opt.expandtab = true
+vim.opt.expandtab = true
 
 -- Install package manager
 --    https://github.com/folke/lazy.nvim
@@ -125,7 +125,11 @@ require('lazy').setup({
       vim.cmd.colorscheme 'onedark'
 
       require('onedark').setup {
-        style = 'warmer',
+        style = 'dark',
+        transparent = true,
+        highlights = {
+          ['@parameter'] = { fg = '#abb2bf' },
+        },
       }
       require('onedark').load()
     end,
@@ -180,29 +184,19 @@ require('lazy').setup({
     },
     build = ':TSUpdate',
   },
+  -- Go development
+  {
+    'fatih/vim-go',
+    config = function()
+      vim.g.go_gopls_enabled = 0
+    end,
+  },
 
-  -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
-  --       These are some example plugins that I've included in the kickstart repository.
-  --       Uncomment any of the lines below to enable them.
-  -- require 'kickstart.plugins.autoformat',
-  -- require 'kickstart.plugins.debug',
-
-  -- NOTE: The import below automatically adds your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
-  --    You can use this folder to prevent any conflicts with this init.lua if you're interested in keeping
-  --    up-to-date with whatever is in the kickstart repo.
-  --
-  --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
-  --
-  --    An additional note is that if you only copied in the `init.lua`, you can just comment this line
-  --    to get rid of the warning telling you that there are not plugins in `lua/custom/plugins/`.
   { import = 'custom.plugins' },
 }, {})
 
--- [[ Setting options ]]
--- See `:help vim.o`
-
 -- Set highlight on search
-vim.o.hlsearch = false
+vim.o.hlsearch = true
 
 -- Make line numbers default
 vim.wo.number = true
@@ -238,6 +232,9 @@ vim.o.completeopt = 'menuone,noselect'
 
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
+
+-- Search highlight
+vim.api.nvim_set_hl(0, 'Search', { bg = '#cccccc', fg = '#000000' })
 
 -- [[ Basic Keymaps ]]
 
@@ -443,6 +440,8 @@ local on_attach = function(client, bufnr)
   vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
     vim.lsp.buf.format()
   end, { desc = 'Format current buffer with LSP' })
+  -- Autoformat file on save
+  vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
 
   if client.name == 'tsserver' then
     client.server_capabilities.documentFormattingProvider = false -- 0.8 and later
@@ -460,20 +459,7 @@ local on_attach = function(client, bufnr)
 end
 
 -- Enable the following language servers
---  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
---
---  Add any additional override configuration in the following tables. They will be passed to
---  the `settings` field of the server config. You must look up that documentation yourself.
 local servers = {
-  -- clangd = {},
-  -- gopls = {},
-  -- pyright = {},
-  -- rust_analyzer = {},
-  -- tsserver = {
-  --   filetypes = { "typescript", "typescriptreact", "typescript.tsx" },
-  --   cmd = { "typescript-language-server", "--stdio" },
-  -- },
-  --
   awk_ls = {},
   bashls = {},
   clangd = {},
@@ -483,11 +469,42 @@ local servers = {
   dockerls = {},
   dotls = {},
   eslint = {},
-  gopls = {},
+  gopls = {
+    settings = {
+      gopls = {
+        completeUnimported = true,
+        usePlaceholders = true,
+        analyses = {
+          unusedparams = true,
+        },
+        -- codelenses = {
+        --   gc_details = false,
+        --   generate = true,
+        --   regenerate_cgo = true,
+        --   run_govulncheck = true,
+        --   test = true,
+        --   tidy = true,
+        --   upgrade_dependency = true,
+        --   vendor = true,
+        -- },
+        -- experimentalPostfixCompletions = true,
+        -- hints = {
+        --   assignVariableTypes = true,
+        --   compositeLiteralFields = true,
+        --   compositeLiteralTypes = true,
+        --   constantValues = true,
+        --   functionTypeParameters = true,
+        --   parameterNames = true,
+        --   rangeVariableTypes = true,
+        -- },
+        gofumpt = true,
+        -- semanticTokens = true,
+      },
+    },
+  },
   html = {},
   jsonls = {},
   tsserver = {
-    -- filetypes = { 'typescript', 'typescriptreact', 'typescript.tsx' },
     cmd = { 'typescript-language-server', '--stdio' },
   },
   marksman = {},
@@ -532,7 +549,7 @@ mason_lspconfig.setup_handlers {
     local server_setup = {
       capabilities = capabilities,
       on_attach = on_attach,
-      settings = {},
+      settings = servers[server_name],
     }
 
     if servers[server_name] == nil then
@@ -567,7 +584,7 @@ cmp.setup {
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
     },
-    ['j'] = cmp.mapping(function(fallback)
+    ['<Down>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
       elseif luasnip.expand_or_jumpable() then
@@ -576,7 +593,7 @@ cmp.setup {
         fallback()
       end
     end, { 'i', 's' }),
-    ['k'] = cmp.mapping(function(fallback)
+    ['<Up>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_prev_item()
       elseif luasnip.jumpable(-1) then
@@ -618,6 +635,7 @@ vim.api.nvim_create_user_command('Commands', getCommands, {})
 
 -- Custom scripts
 vim.cmd.source(os.getenv 'HOME' .. '/.config/nvim/lua/custom/vimscripts/detect-go-html-tmpl.vim')
+vim.cmd.source(os.getenv 'HOME' .. '/.config/nvim/lua/custom/scripts/term.lua')
 
 -- Neovide settings
 if vim.g.neovide then
