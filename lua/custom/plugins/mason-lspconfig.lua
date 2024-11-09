@@ -106,8 +106,6 @@ return {
       vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
         vim.lsp.buf.format()
       end, { desc = 'Format current buffer with LSP' })
-      -- Autoformat file on save
-      vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
 
       if client.name == 'tsserver' then
         client.server_capabilities.documentFormattingProvider = false -- 0.8 and later
