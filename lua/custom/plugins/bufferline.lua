@@ -9,6 +9,7 @@ return {
     end
 
     vim.opt.termguicolors = true
+    local inactive_tab_fg = '#888888'
 
     -- vim.keymap.set('n', '[b', ':BufferLineCyclePrev<CR>', { desc = 'Go to previous tab / buffer' })
     -- vim.keymap.set('n', '[b', ':BufferLineCyclePrev<CR>', { desc = 'Go to previous tab / buffer' })
@@ -24,6 +25,23 @@ return {
           text_align = 'left',
         } },
         style_preset = bufferline.style_preset.no_italic,
+      },
+      highlights = {
+        background = {
+          fg = inactive_tab_fg,
+        },
+        buffer = {
+          fg = inactive_tab_fg,
+        },
+        tab = {
+          fg = inactive_tab_fg,
+        },
+        tab_close = {
+          fg = inactive_tab_fg,
+        },
+        close_button = {
+          fg = inactive_tab_fg,
+        },
       },
     }
   end,

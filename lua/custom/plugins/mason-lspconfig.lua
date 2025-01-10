@@ -47,12 +47,12 @@ return {
       },
       html = {},
       jsonls = {},
-      tsserver = {
+      ts_ls = {
         cmd = { 'typescript-language-server', '--stdio' },
       },
       marksman = {},
       pylsp = {},
-      ruby_ls = {},
+      ruby_lsp = {},
       svelte = {},
       taplo = {},
       yamlls = {},
